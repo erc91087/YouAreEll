@@ -1,3 +1,5 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +12,14 @@ public class SimpleShell {
 
     public static void prettyPrint(String output) {
         // yep, make an effort to format things nicely, eh?
-        System.out.println(output);
+        ObjectMapper objectMapper = new ObjectMapper(); // its jackson used as a format for Json so it's not all one line
+        try {
+            Object json = objectMapper.readValue(output, Object.class);
+            String prettyPrint = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+            System.out.println(prettyPrint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public static void main(String[] args) throws java.io.IOException {
 
@@ -19,10 +28,16 @@ public class SimpleShell {
         BufferedReader console = new BufferedReader
                 (new InputStreamReader(System.in));
 
+        ObjectMapper mapper = new ObjectMapper();
+
         ProcessBuilder pb = new ProcessBuilder();
         List<String> history = new ArrayList<String>();
+
+      //  ObjectMapper mapper = new ObjectMapper();
+
         int index = 0;
         //we break out with <ctrl c>
+
         while (true) {
             //read what the user enters
             System.out.println("cmd? ");
@@ -35,6 +50,7 @@ public class SimpleShell {
             //if the user entered a return, just loop again
             if (commandLine.equals(""))
                 continue;
+
             if (commandLine.equals("exit")) {
                 System.out.println("bye!");
                 break;
@@ -59,9 +75,20 @@ public class SimpleShell {
                 // Specific Commands.
 
                 // ids
-                if (list.contains("ids")) {
+                if (list.contains("ids") && list.size() == 1) {
                     String results = webber.get_ids();
                     SimpleShell.prettyPrint(results);
+                    continue;
+                }
+
+                if (list.contains("ids") && list.size() == 3) {
+                    String name = list.get(1);          // list refers to the Arraylist created
+                    String github = list.get(2);
+
+
+                    Id user = new Id(name, github);
+                    String newIdInfo = mapper.writeValueAsString(user);
+                    webber.MakeURLCall("/ids", "POST", newIdInfo);
                     continue;
                 }
 

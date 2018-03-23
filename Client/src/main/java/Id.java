@@ -2,13 +2,19 @@ public class Id {
 
     private String userId;
     private String name;
-    private String githubId;
+    private String github;
 
-    public Id(String userId, String name, String githubId) {
+    public Id(String userId, String name, String github) {
         this.userId = userId;
         this.name = name;
-        this.githubId = githubId;
+        this.github = github;
     }
+
+    public Id(String name, String github) {
+        this.name = name;
+        this.github = github;
+    }
+
 
     public String getUserId() {
         return userId;
@@ -26,16 +32,16 @@ public class Id {
         this.name = name;
     }
 
-    public String getGithubId() {
-        return githubId;
+    public String getGithub() {
+        return github;
     }
 
-    public void setGithubId(String githubId) {
-        this.githubId = githubId;
+    public void setGithubId(String github) {
+        this.github = github;
     }
 
     @Override
     public String toString() {
-        return "UserId: " + this.userid + "Name: " + this.name + ", Github: " + this.github;
+        return "UserId: " + this.userId + "Name: " + this.name + ", Github: " + this.github;
     }
 }
